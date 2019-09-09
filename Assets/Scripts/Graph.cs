@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Graph : MonoBehaviour {
+    public event System.Action onGraphModified;
+
     [SerializeField]
     Transform _pov = null;
     public Transform PoV { get { if (!_pov) _pov = transform; return _pov; } }
@@ -18,12 +20,18 @@ public class Graph : MonoBehaviour {
         return PoV.InverseTransformPoint(point);
     }
 
+    public void SetVertex (int index, Vector3 pos) {
+        vertex[index] = pos;
+    }
+
     public void AddVertex (Vector3 pos) {
         vertex.Add(pos);
 
         while (edges.Count < vertex.Count) {
             edges.Add(new Edge());
         }
+
+        FireGraphModified();
     }
 
     public void DeleteVertex (int index) {
@@ -42,6 +50,8 @@ public class Graph : MonoBehaviour {
         foreach (Edge edge in edges) {
             edge.links.RemoveAll((int a) => a < 0);
         }
+
+        FireGraphModified();
     }
 
     public void Connect (int origin, int destination,
@@ -51,6 +61,8 @@ public class Graph : MonoBehaviour {
         if (false == directed) {
             Connect(destination, origin);
         }
+
+        FireGraphModified();
     }
 
     public void Disconnect (int origin, int destination,
@@ -66,6 +78,8 @@ public class Graph : MonoBehaviour {
         if (false == directed) {
             Disconnect(destination, origin);
         }
+
+        FireGraphModified();
     }
 
     public bool IsConnected (int origin, int destination) {
@@ -74,5 +88,9 @@ public class Graph : MonoBehaviour {
         }
 
         return false;
+    }
+
+    public void FireGraphModified () {
+        if (onGraphModified != null) onGraphModified();
     }
 }

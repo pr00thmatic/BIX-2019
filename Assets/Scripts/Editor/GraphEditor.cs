@@ -136,22 +136,34 @@ public class GraphEditor : Editor {
     public static void UpdateVertexMotion (Graph target) {
         if (selected < 0) return;
 
-        Matrix4x4 old = Handles.matrix;
-        Handles.matrix = target.PoV.localToWorldMatrix;
+        if (createNewVertices) {
+            Matrix4x4 old = Handles.matrix;
+            Handles.matrix = target.PoV.localToWorldMatrix;
 
-        if (Event.current.type == EventType.MouseDrag &&
-            Event.current.button == 0 && !CoolEditor.SpecialKeyDown()) {
+            if (Event.current.type == EventType.MouseDrag &&
+                Event.current.button == 0 && !CoolEditor.SpecialKeyDown()) {
 
-            Undo.RecordObject(target, "moved a vertex");
-            Vector3 pos;
-            CoolEditor.MouseRaycastToPlane(out pos, target.PoV.up,
-                                           target.PoV.position);
-            target.vertex[selected] = target.ToLocalPoint(pos);
-            CoolEditor.CancelEvent();
+                Undo.RecordObject(target, "moved a vertex");
+                Vector3 pos;
+                CoolEditor.MouseRaycastToPlane(out pos, target.PoV.up,
+                                               target.PoV.position);
+                target.vertex[selected] = target.ToLocalPoint(pos);
+                target.FireGraphModified();
+                CoolEditor.CancelEvent();
 
+            }
+
+            Handles.matrix = old;
+        } else {
+            Vector3 newPos = Handles.PositionHandle(target.vertex[selected],
+                                                    Quaternion.identity);
+
+            if (newPos != target.vertex[selected]) {
+                Undo.RecordObject(target, "moved a vertex");
+                target.vertex[selected] = newPos;
+                target.FireGraphModified();
+            }
         }
-
-        Handles.matrix = old;
     }
 
     public static void UpdateDeletion (Graph target) {
