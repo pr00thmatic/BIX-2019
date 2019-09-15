@@ -18,6 +18,23 @@ public class CoolEditor {
         Tools.current = oldTool == Tool.None? Tool.Move: oldTool;
     }
 
+    public static void ArrowHead (Vector3 position, Vector3 direction,
+                                  float size, float offset = 0) {
+        direction.Normalize();
+
+        Matrix4x4 newMatrix = Handles.matrix *
+            Matrix4x4.TRS(position, Quaternion.LookRotation(direction),
+                          Vector3.one);
+
+        using (new Handles.DrawingScope(Handles.color, newMatrix)) {
+            Handles.DrawAAConvexPolygon(new Vector3[] {
+                    new Vector3(0,0, -offset),
+                    new Vector3(size/2f, 0, -size -offset),
+                    new Vector3(-size/2f, 0, -size -offset)
+                });
+        }
+    }
+
     public static bool SpecialKeyDown () {
         return Event.current.shift ||
             Event.current.control || Event.current.alt;
@@ -57,22 +74,5 @@ public class CoolEditor {
         Handles.DrawSolidDisc(position, Vector3.up, size);
 
         return didClick;
-    }
-
-    public static void ArrowHead (Vector3 position, Vector3 direction,
-                                  float size, float offset = 0) {
-        direction.Normalize();
-        Matrix4x4 old = Handles.matrix;
-        Handles.matrix = old *
-            Matrix4x4.TRS(position, Quaternion.LookRotation(direction),
-                          Vector3.one);
-
-        Handles.DrawAAConvexPolygon(new Vector3[] {
-                new Vector3(0,0, -offset),
-                new Vector3(size/2f, 0, -size -offset),
-                new Vector3(-size/2f, 0, -size -offset)
-            });
-
-        Handles.matrix = old;
     }
 }
