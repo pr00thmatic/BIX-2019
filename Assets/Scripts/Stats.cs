@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 [System.Serializable]
-[CreateAssetMenu(fileName = "Stats", menuName = "Stats")]
+[CreateAssetMenu(menuName = "Stats")]
 public class Stats : ScriptableObject {
     public RenewableStat hp;
     public RenewableStat mp;

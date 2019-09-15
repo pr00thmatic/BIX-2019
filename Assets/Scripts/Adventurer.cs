@@ -6,11 +6,5 @@ public class Adventurer : MonoBehaviour {
     public Stats stats;
     public List<GameObject> inventory;
 
-    void Start () {
-
-    }
-
-    void Update () {
-
-    }
+    // ...
 }

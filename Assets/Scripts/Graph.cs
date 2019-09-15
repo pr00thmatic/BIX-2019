@@ -5,13 +5,13 @@ using System.Collections.Generic;
 public class Graph : MonoBehaviour {
     public event System.Action onGraphModified;
 
-    Vector3 _pos;
-
     [SerializeField]
     Transform _pov = null;
     public Transform PoV { get { if (!_pov) _pov = transform; return _pov; } }
 
+    [HideInInspector]
     public List<Vector3> vertex = new List<Vector3>();
+    [HideInInspector]
     public List<Edge> edges = new List<Edge>();
 
     public Vector3 ToWorldPoint (Vector3 point) {
